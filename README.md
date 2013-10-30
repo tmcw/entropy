@@ -102,3 +102,8 @@ EntropySource
 
 * http://wiki.openssl.org/index.php/Random_Numbers
 * http://research.swtch.com/openssl
+
+
+### Hardware
+
+* https://en.wikipedia.org/wiki/Hardware_random_number_generator
