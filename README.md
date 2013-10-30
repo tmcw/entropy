@@ -45,3 +45,55 @@ DEFINE_int(random_seed, 0,
            "Default seed for initializing random generator "
            "(0, the default, means to use system random).")
 ```
+
+EntropySource
+
+```cpp
+
+#if V8_OS_CYGWIN || V8_OS_WIN
+  // Use rand_s() to gather entropy on Windows. See:
+  // https://code.google.com/p/v8/issues/detail?id=2905
+  unsigned first_half, second_half;
+  errno_t result = rand_s(&first_half);
+  ASSERT_EQ(0, result);
+  result = rand_s(&second_half);
+  ASSERT_EQ(0, result);
+  SetSeed((static_cast<int64_t>(first_half) << 32) + second_half);
+#else
+  // Gather entropy from /dev/urandom if available.
+  FILE* fp = fopen("/dev/urandom", "rb");
+  if (fp != NULL) {
+    int64_t seed;
+    size_t n = fread(&seed, sizeof(seed), 1, fp);
+    fclose(fp);
+    if (n == 1) {
+      SetSeed(seed);
+      return;
+    }
+  }
+
+  // We cannot assume that random() or rand() were seeded
+  // properly, so instead of relying on random() or rand(),
+  // we just seed our PRNG using timing data as fallback.
+  // This is weak entropy, but it's sufficient, because
+  // it is the responsibility of the embedder to install
+  // an entropy source using v8::V8::SetEntropySource(),
+  // which provides reasonable entropy, see:
+  // https://code.google.com/p/v8/issues/detail?id=2905
+  int64_t seed = Time::NowFromSystemTime().ToInternalValue() << 24;
+  seed ^= TimeTicks::HighResolutionNow().ToInternalValue() << 16;
+  seed ^= TimeTicks::Now().ToInternalValue() << 8;
+  SetSeed(seed);
+#endif  // V8_OS_CYGWIN || V8_OS_WIN
+}
+```
+
+### [node](https://github.com/joyent/node/blob/master/src/node.cc#L3345-L3349)
+
+```cpp
+#if HAVE_OPENSSL
+  // V8 on Windows doesn't have a good source of entropy. Seed it from
+  // OpenSSL's pool.
+  V8::SetEntropySource(crypto::EntropySource);
+#endif
+```
