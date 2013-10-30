@@ -107,3 +107,4 @@ EntropySource
 ### Hardware
 
 * https://en.wikipedia.org/wiki/Hardware_random_number_generator
+* https://en.wikipedia.org/wiki/Randomness_extractor
