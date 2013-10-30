@@ -97,3 +97,8 @@ EntropySource
   V8::SetEntropySource(crypto::EntropySource);
 #endif
 ```
+
+### openssl
+
+* http://wiki.openssl.org/index.php/Random_Numbers
+* http://research.swtch.com/openssl
