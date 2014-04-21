@@ -7,6 +7,10 @@ entropy
 
 * [Geiger Counter tubes](http://www.ebay.com/itm/Geiger-Muller-tube-counter-SI3BG-NEW-lot-of-10-tubes-/251278027433?pt=BI_Security_Fire_Protection&hash=item3a81566aa9)
 
+## Tests
+
+* [NIST Test](http://csrc.nist.gov/groups/ST/toolkit/rng/documentation_software.html)
+
 ## Behind the scenes
 
 ### ECMA 262
